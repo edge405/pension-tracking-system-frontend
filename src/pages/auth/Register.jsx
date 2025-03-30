@@ -1,14 +1,73 @@
 import React, { useState } from 'react';
 import { UserPlus, User, Lock, MapPin, Phone, Camera, FilePlus } from 'lucide-react';
+import axios from '../../axios'
 
 const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [idFile, setIdFile] = useState(null);
+  const [sex, setSex] = useState(''); // Add state for sex
 
   const handleIdFileChange = (e) => {
     const file = e.target.files[0];
     setIdFile(file);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
+  
+    // Validate form fields
+    if (!password || !confirmPassword || password !== confirmPassword) {
+      alert('Passwords do not match or are missing.');
+      return;
+    }
+    if (!idFile) {
+      alert('Please upload a valid ID with a selfie.');
+      return;
+    }
+    if (!sex) {
+      alert('Please select your gender.');
+      return;
+    }
+  
+    // Create FormData object
+    const formData = new FormData();
+    formData.append('fullname', e.target.name.value);
+    formData.append('senior_citizen_id', e.target.id.value);
+    formData.append('birthdate', e.target.birthdate.value);
+    formData.append('contact_number', e.target.contact.value);
+    formData.append('address', e.target.address.value);
+    formData.append('password', password);
+    formData.append('valid_id', idFile); // Append the file
+    formData.append('sex', sex);
+  
+    try {
+      // Send POST request to the backend
+      const response = await axios.post(
+        '/api/pensioner/register',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data', // Ensure correct content type
+          },
+        }
+      );
+  
+      // Handle successful response
+      console.log('Registration successful:', response.data);
+      alert(response.data.message || 'Registration successful!');
+  
+      // Reset form fields after submission
+      setPassword('');
+      setConfirmPassword('');
+      setIdFile(null);
+      setSex('');
+      e.target.reset();
+    } catch (error) {
+      // Handle error response
+      console.error('Error during registration:', error.response?.data || error.message);
+      alert(error.response?.data?.error || 'An error occurred during registration.');
+    }
   };
 
   return (
@@ -26,7 +85,8 @@ const Register = () => {
       <div className="flex flex-1 container mx-auto mt-6 px-4 mb-6 justify-center items-center">
         <div className="w-full max-w-lg bg-white rounded-lg shadow-lg p-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Register Account</h2>
-          <form>
+          <form onSubmit={handleSubmit}>
+            {/* Full Name */}
             <div className="mb-6">
               <label htmlFor="name" className="block text-sm font-medium text-gray-600 mb-1">
                 Full Name
@@ -36,12 +96,44 @@ const Register = () => {
                 <input
                   type="text"
                   id="name"
+                  name="name"
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your full name"
                   required
                 />
               </div>
             </div>
+
+            {/* Sex Field */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-600 mb-1">Sex</label>
+              <div className="flex space-x-4">
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="sex"
+                    value="male"
+                    checked={sex === 'male'}
+                    onChange={(e) => setSex(e.target.value)}
+                    className="form-radio text-blue-500"
+                  />
+                  <span className="ml-2 text-gray-700">Male</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="sex"
+                    value="female"
+                    checked={sex === 'female'}
+                    onChange={(e) => setSex(e.target.value)}
+                    className="form-radio text-blue-500"
+                  />
+                  <span className="ml-2 text-gray-700">Female</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Senior Citizen ID */}
             <div className="mb-6">
               <label htmlFor="id" className="block text-sm font-medium text-gray-600 mb-1">
                 Senior Citizen ID
@@ -51,12 +143,15 @@ const Register = () => {
                 <input
                   type="text"
                   id="id"
+                  name="id"
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your Senior Citizen ID"
                   required
                 />
               </div>
             </div>
+
+            {/* Birthdate */}
             <div className="mb-6">
               <label htmlFor="birthdate" className="block text-sm font-medium text-gray-600 mb-1">
                 Birthdate
@@ -65,11 +160,14 @@ const Register = () => {
                 <input
                   type="date"
                   id="birthdate"
+                  name="birthdate"
                   className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
               </div>
             </div>
+
+            {/* Contact Number */}
             <div className="mb-6">
               <label htmlFor="contact" className="block text-sm font-medium text-gray-600 mb-1">
                 Contact Number
@@ -79,12 +177,15 @@ const Register = () => {
                 <input
                   type="text"
                   id="contact"
+                  name="contact"
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your contact number"
                   required
                 />
               </div>
             </div>
+
+            {/* Address */}
             <div className="mb-6">
               <label htmlFor="address" className="block text-sm font-medium text-gray-600 mb-1">
                 Address
@@ -94,12 +195,15 @@ const Register = () => {
                 <input
                   type="text"
                   id="address"
+                  name="address"
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your address"
                   required
                 />
               </div>
             </div>
+
+            {/* Password */}
             <div className="mb-6">
               <label htmlFor="password" className="block text-sm font-medium text-gray-600 mb-1">
                 Password
@@ -109,6 +213,7 @@ const Register = () => {
                 <input
                   type="password"
                   id="password"
+                  name="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -117,6 +222,8 @@ const Register = () => {
                 />
               </div>
             </div>
+
+            {/* Confirm Password */}
             <div className="mb-6">
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-600 mb-1">
                 Confirm Password
@@ -126,17 +233,17 @@ const Register = () => {
                 <input
                   type="password"
                   id="confirmPassword"
+                  name="confirmPassword"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className={`w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                   placeholder="Re-enter your password"
                   required
                 />
-                {confirmPassword && confirmPassword !== password && (
-                  <p className="text-red-500 text-xs mt-1">Passwords do not match.</p>
-                )}
               </div>
             </div>
+
+            {/* Upload Valid ID with Selfie */}
             <div className="mb-6">
               <label htmlFor="idFile" className="block text-sm font-medium text-gray-700 mb-2">
                 Upload Valid ID with Selfie
@@ -191,16 +298,19 @@ const Register = () => {
                 </div>
               )}
             </div>
+
+            {/* Submit Button */}
             <button
               type="submit"
               className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-500 transition-colors duration-200 cursor-pointer"
-              disabled={password !== confirmPassword || !idFile}
             >
               Register
             </button>
+
+            {/* Login Link */}
             <p className="mt-4 text-center text-sm text-gray-600">
               Already have an account?{' '}
-              <a href="/login" className="text-blue-600 hover:text-blue-800 font-medium">
+              <a href="/" className="text-blue-600 hover:underline font-medium">
                 Login here
               </a>
             </p>

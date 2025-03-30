@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 import { CreditCard, LogOut, Bell, User, History, Phone } from 'lucide-react';
 
 // Import components
@@ -7,59 +8,22 @@ import Dashboard from './Dashboard';
 import Profile from './Profile';
 import PaymentHistory from './PaymentHistory';
 import Notifications from './Notifications';
-import axios from "../../axios"
+// import axios from "../../axios"
+import { useNavigate } from 'react-router-dom';
 
 const PensionerDashboard = () => {
   const [activeTab, setActiveTab] = useState('home');
-  
-  axios.get('/api/pensioner/profile',
-    {
-      auth: {
-        username: 
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0MjczNzY1NywianRpIjoiYTU3NjMyMDAtZjM0Mi00MDQ2LTkzY2ItYjM1ZjY2NDY0Yjc4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NDI3Mzc2NTcsImNzcmYiOiI2OTcxODIzZS0wOWI3LTRhZDUtYWU2My0wOTYzNzgxOTI0ZjAiLCJleHAiOjE3NDI3NTkyNTcsImlkIjoxLCJmdWxsbmFtZSI6Ikp1YW4gRGVsYSBDcnV6Iiwic2VuaW9yX2NpdGl6ZW5faWQiOiJTQy0xMjM0NTYiLCJjb250YWN0X251bWJlciI6IjA5MTIzNDU2Nzg5IiwiYWRkcmVzcyI6IjEyMyBCYXJhbmdheSBTdHJlZXQsIE1hbmlsYSIsImJpcnRoZGF0ZSI6IjE5NTAtMDUtMTUiLCJ2YWxpZF9pZCI6Imh0dHBzOi8vZXhhbXBsZS5jb20vdmFsaWQtaWQuanBnIiwicGF5b3V0X2Ftb3VudCI6bnVsbCwic3RhdHVzIjoicGVuZGluZyIsImNyZWF0ZWRfYXQiOiIyMDI1LTAzLTIzIDEwOjM2OjEyLjc5MDk3MiIsInVzZXJfdHlwZSI6InBlbnNpb25lciJ9.r1YsCbGQg9yg-HSoUJ-ELZBdTaAYS6l-s0lt-2JCTew"
-      }
-    }
-  )
-  .then(response => console.log(response.data))
-  .catch(error => console.error(error));
-  // Mock data
-  const pensionerInfo = {
-    name: 'Maria Christine Joy Susvilla',
-    id: 'SC-123456',
-    birthdate: 'January 15, 1910',
-    sex: 'Female',
-    address: '123 Rizal Street, Poblacion, Alimodian, Iloilo',
-    contact: '(+63) 912-345-6789',
-    pensionAmount: '₱2,000',
-    nextPayoutDate: 'April 15, 2025',
-    nextPayoutLocation: 'Barangay San Isidro Community Center, Alimodian'
-  };
-  
-  const [paymentHistory, setPaymentHistory] = useState([]);
+  const { logout } = useContext(AuthContext)
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    setPaymentHistory([    
-      { id: 1, date: '2025-02-15', amount: '₱2,000', location: 'Barangay Sample Community Center, Alimodian', status: 'Received' },
-      { id: 2, date: '2025-01-15', amount: '₱2,000', location: 'Barangay Sample Community Center, Alimodian', status: 'Received' },
-      { id: 4, date: '2024-11-15', amount: '₱2,000', location: 'Barangay Sample Community Center, Alimodian', status: 'Received' },
-      { id: 5, date: '2024-10-15', amount: '₱2,000', location: 'Barangay Sample Community Center, Alimodian', status: 'Received' },]
-    )
-  }, [])
+
+  const handleLogout = () => {
+    logout()
+
+    navigate('/')
+  }
+
   
-  const [notifications, setNotifications] = useState([
-    { id: 1, message: 'Your next pension payment is scheduled for April 15, 2025', date: '2025-03-10', isNew: true },
-    { id: 2, message: 'Payout location is on Barangay Sample Community Center, Alimodian', date: '2025-02-28', isNew: true },
-  ]);
-  
-  // Handler for marking all notifications as read
-  const markAllAsRead = () => {
-    setNotifications(
-      notifications.map(notification => ({
-        ...notification,
-        isNew: false
-      }))
-    );
-  };
   
   // Render the active tab content
   const renderContent = () => {
@@ -67,21 +31,18 @@ const PensionerDashboard = () => {
       case 'home':
         return (
           <Dashboard 
-            pensionerInfo={pensionerInfo} 
-            paymentHistory={paymentHistory} 
-            notifications={notifications} 
             setActiveTab={setActiveTab} 
           />
         );
       
       case 'profile':
-        return <Profile pensionerInfo={pensionerInfo} />;
+        return <Profile/>;
       
       case 'history':
-        return <PaymentHistory paymentHistory={paymentHistory} />;
+        return <PaymentHistory />;
       
       case 'notifications':
-        return <Notifications notifications={notifications} markAllAsRead={markAllAsRead} />;
+        return <Notifications/>;
       
       default:
         return null;
@@ -98,7 +59,9 @@ const PensionerDashboard = () => {
             Senior Citizens Pension System
           </h1>
           <div className="flex items-center space-x-4">
-            <button className="bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded-md text-sm font-medium flex items-center transition duration-200 ease-in-out transform hover:scale-105">
+            <button className="bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded-md text-sm font-medium flex items-center transition duration-200 ease-in-out transform hover:scale-105 cursor-pointer"
+              onClick={handleLogout}
+            >
               <LogOut size={16} className="mr-2" />
               Logout
             </button>
@@ -112,8 +75,6 @@ const PensionerDashboard = () => {
         <Sidebar 
           activeTab={activeTab} 
           setActiveTab={setActiveTab}
-          pensionerInfo={pensionerInfo}
-          notifications={notifications}
         />
         
         {/* Mobile Navigation */}
@@ -139,18 +100,6 @@ const PensionerDashboard = () => {
             >
               <History size={16} className="mr-1" />
               History
-            </button>
-            <button 
-              className={`flex-shrink-0 px-4 py-2 rounded-md flex items-center ${activeTab === 'notifications' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700'}`}
-              onClick={() => setActiveTab('notifications')}
-            >
-              <Bell size={16} className="mr-1" />
-              Alerts
-              {notifications.some(n => n.isNew) && (
-                <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  {notifications.filter(n => n.isNew).length}
-                </span>
-              )}
             </button>
           </div>
         </div>

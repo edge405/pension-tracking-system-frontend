@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 import { CreditCard, LogOut, ClipboardCheck, Users, Calendar } from 'lucide-react';
 
 // Import components
@@ -9,6 +10,7 @@ import SchedulePayout from './SchedulePayout';
 import VerificationModal from './VerificationModal';
 import EditModal from './EditModal';
 import ScheduleModal from './ScheduleModal';
+import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('pending');
@@ -16,6 +18,13 @@ const AdminDashboard = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [selectedPensioner, setSelectedPensioner] = useState(null);
+  const navigate = useNavigate();
+  const { logout } = useContext(AuthContext)
+  
+  const handleLogout = () => {
+    logout()
+    navigate('/admin-login')
+  }
   
   // Mock data for pending verifications
   const [pendingVerifications, setPendingVerifications] = useState([
@@ -237,7 +246,9 @@ const AdminDashboard = () => {
               </div>
               <span className="hidden md:inline">Admin User</span>
             </div>
-            <button className="bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded-md text-sm font-medium flex items-center transition duration-200 ease-in-out">
+            <button className="bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded-md text-sm font-medium flex items-center transition duration-200 ease-in-out transform hover:scale-105 cursor-pointer"
+            onClick={handleLogout}
+            >
               <LogOut size={16} className="mr-2" />
               Logout
             </button>

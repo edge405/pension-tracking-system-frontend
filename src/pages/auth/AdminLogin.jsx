@@ -1,14 +1,33 @@
-import React, { useState } from 'react';
+import { useState, useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 import { LogIn, User, Lock, Shield } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import axios from '../../axios';
+
 
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add authentication logic here
-    console.log('Login attempt:', { username, password });
+    try {
+      const response = await axios.get('/api/admin/login', {
+        auth: {
+          username: username,
+          password: password
+        }
+      });
+      console.log(response.data);
+      
+      const { access_token , user_type } = response.data;
+      login(access_token, user_type);
+      navigate('/admin-dashboard');
+    } catch (error) {
+      console.error('Admin login failed:', error.response?.data?.error || 'Unknown error');
+    }
   };
 
   return (
