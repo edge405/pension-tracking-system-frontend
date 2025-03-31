@@ -18,11 +18,6 @@ const Sidebar = ({ activeTab, setActiveTab, pendingCount }) => {
               >
                 <ClipboardCheck size={18} className={`${activeTab === 'pending' ? 'mr-3' : 'mr-3 text-blue-500'}`} />
                 Pending Verification
-                {pendingCount > 0 && (
-                  <span className={`ml-auto ${activeTab === 'pending' ? 'bg-white text-blue-600' : 'bg-blue-600 text-white'} text-xs rounded-full w-6 h-6 flex items-center justify-center`}>
-                    {pendingCount}
-                  </span>
-                )}
               </button>
             </li>
             <li>

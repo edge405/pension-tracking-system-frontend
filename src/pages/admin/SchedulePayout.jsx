@@ -11,7 +11,7 @@ const SchedulePayout = ({ scheduledPayouts, handleOpenSchedule }) => {
         <h2 className="text-2xl font-bold text-gray-800">Schedule Payout</h2>
         <button 
           onClick={handleOpenSchedule}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
         >
           <Plus size={18} />
           <span>New Schedule</span>

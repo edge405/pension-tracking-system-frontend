@@ -150,52 +150,6 @@ const AdminDashboard = () => {
     setShowScheduleModal(true);
   };
   
-  // Handlers for verification actions
-  const handleApproveVerification = () => {
-    // In a real app, you would make an API call here
-    // For now, we'll just update the local state
-    
-    // Create a new pensioner record
-    const newPensioner = {
-      id: selectedPensioner.id,
-      name: `${selectedPensioner.firstName} ${selectedPensioner.middleName} ${selectedPensioner.lastName}`,
-      age: selectedPensioner.age,
-      barangay: selectedPensioner.barangay,
-      address: `Sample Address, ${selectedPensioner.barangay}, Alimodian, Iloilo`,
-      pensionAmount: 2000,
-      lastPayoutDate: 'N/A',
-      nextPayoutDate: scheduledPayouts.find(p => p.status === 'scheduled')?.date || 'TBD'
-    };
-    
-    // Add to approved list
-    setApprovedPensioners([...approvedPensioners, newPensioner]);
-    
-    // Remove from pending
-    setPendingVerifications(pendingVerifications.filter(p => p.id !== selectedPensioner.id));
-    
-    // Close modal
-    setShowVerificationModal(false);
-    setSelectedPensioner(null);
-  };
-  
-  const handleRejectVerification = () => {
-    // Remove from pending
-    setPendingVerifications(pendingVerifications.filter(p => p.id !== selectedPensioner.id));
-    
-    // Close modal
-    setShowVerificationModal(false);
-    setSelectedPensioner(null);
-  };
-  
-  // Handler for pension amount update
-  const handleUpdatePension = (id, newAmount) => {
-    setApprovedPensioners(
-      approvedPensioners.map(p => 
-        p.id === id ? { ...p, pensionAmount: newAmount } : p
-      )
-    );
-  };
-  
   // Handler for scheduling new payout
   const handleSchedulePayout = (newPayout) => {
     setScheduledPayouts([newPayout, ...scheduledPayouts]);
@@ -320,16 +274,6 @@ const AdminDashboard = () => {
           </div>
         </div>
       </footer>
-      
-      {/* Modals */}
-      {showVerificationModal && (
-        <VerificationModal 
-          selectedPensioner={selectedPensioner}
-          onClose={() => setShowVerificationModal(false)}
-          onApprove={handleApproveVerification}
-          onReject={handleRejectVerification}
-        />
-      )}
       
       {showEditModal && (
         <EditModal 

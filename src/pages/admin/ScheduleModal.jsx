@@ -29,7 +29,7 @@ const ScheduleModal = ({ onClose, onSchedule }) => {
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
           >
-            <XCircle size={24} />
+            <XCircle className='cursor-pointer' size={24} />
           </button>
         </div>
         
@@ -96,13 +96,13 @@ const ScheduleModal = ({ onClose, onSchedule }) => {
         <div className="flex justify-end gap-3 border-t border-gray-200 pt-4">
           <button 
             onClick={onClose}
-            className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+            className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 cursor-pointer"
           >
             Cancel
           </button>
           <button 
             onClick={handleSchedule}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 cursor-pointer"
           >
             <Calendar size={18} />
             Schedule Payout
