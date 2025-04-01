@@ -1,25 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { XCircle, Calendar, AlertCircle } from 'lucide-react';
+import { setSchedulePayouts } from '../services/admin_api';
+import { AuthContext } from '../../context/AuthContext';
 
-const ScheduleModal = ({ onClose, onSchedule }) => {
+const ScheduleModal = ({ onClose }) => {
   const [payoutDate, setPayoutDate] = useState('');
   const [location, setLocation] = useState('');
-  const [startTime, setStartTime] = useState('08:00');
+  const [startTime, setStartTime] = useState('13:00');
   const [endTime, setEndTime] = useState('17:00');
-  
-  const handleSchedule = () => {
-    const newPayout = {
-      date: payoutDate,
-      location: location,
-      totalPensioners: 147, // Mock value
-      status: 'scheduled',
-      startTime: startTime,
-      endTime: endTime
-    };
-    
-    onSchedule(newPayout);
-    onClose();
+  const [error, setError] = useState(null);
+  const { token } = useContext(AuthContext);
+
+  const handleSchedule = async () => {
+    try {
+      // Validate inputs
+      if (!payoutDate || !location || !startTime || !endTime) {
+        setError('All fields are required.');
+        return;
+      }
+
+      // Prepare payload for the backend
+      const payload = {
+        payout_date: payoutDate,
+        payout_location: location,
+        start_time: startTime,
+        end_time: endTime,
+      };
+
+      // Call the backend API to create the schedule payout
+      const response = await setSchedulePayouts(token, payload);
+
+      if (response.success) {
+        onClose(); // Close the modal on success
+      } else {
+        setError(response.message || 'Failed to create schedule payout.');
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+      console.error('Error creating schedule payout:', err);
+    }
   };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-xs bg-black/80">
       <div className="bg-white rounded-xl p-6 w-full max-w-3xl shadow-2xl border border-gray-200">
@@ -32,7 +53,14 @@ const ScheduleModal = ({ onClose, onSchedule }) => {
             <XCircle className='cursor-pointer' size={24} />
           </button>
         </div>
-        
+
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 border border-red-300 text-red-700 px-4 py-2 rounded-lg mb-4">
+            {error}
+          </div>
+        )}
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Payout Date</label>
           <input 
@@ -42,7 +70,7 @@ const ScheduleModal = ({ onClose, onSchedule }) => {
             onChange={(e) => setPayoutDate(e.target.value)}
           />
         </div>
-        
+
         <div className="mt-6 mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">Payout Location</label>
           <input 
@@ -53,7 +81,7 @@ const ScheduleModal = ({ onClose, onSchedule }) => {
             onChange={(e) => setLocation(e.target.value)}
           />
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
@@ -64,7 +92,7 @@ const ScheduleModal = ({ onClose, onSchedule }) => {
               onChange={(e) => setStartTime(e.target.value)}
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
             <input 
@@ -75,8 +103,8 @@ const ScheduleModal = ({ onClose, onSchedule }) => {
             />
           </div>
         </div>
-        
-        <div className="p-4 bg-blue-50 rounded-lg border border-blue-100 mb-6">
+
+        {/* <div className="p-4 bg-blue-50 rounded-lg border border-blue-100 mb-6">
           <div className="flex items-start">
             <div className="pt-0.5">
               <AlertCircle size={18} className="text-blue-600" />
@@ -91,8 +119,8 @@ const ScheduleModal = ({ onClose, onSchedule }) => {
               </div>
             </div>
           </div>
-        </div>
-        
+        </div> */}
+
         <div className="flex justify-end gap-3 border-t border-gray-200 pt-4">
           <button 
             onClick={onClose}

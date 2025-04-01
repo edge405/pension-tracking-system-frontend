@@ -6,6 +6,8 @@ import EditModal from './EditModal'; // Import the EditModal component
 
 const ApprovedPensioners = () => {
   const [approvedPensioners, setApprovedPensioners] = useState([]);
+  const [filteredPensioners, setFilteredPensioners] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedPensioner, setSelectedPensioner] = useState(null); // Track selected pensioner for modal
@@ -22,6 +24,7 @@ const ApprovedPensioners = () => {
         // Ensure the response contains the expected data structure
         if (response && Array.isArray(response)) {
           setApprovedPensioners(response); // Set fetched data to state
+          setFilteredPensioners(response); // Initially set filtered to all pensioners
         } else {
           throw new Error('Invalid response format');
         }
@@ -35,6 +38,30 @@ const ApprovedPensioners = () => {
 
     fetchApprovedPensioners();
   }, [token]);
+
+  // Filter pensioners based on search query
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      // If search is empty, show all pensioners
+      setFilteredPensioners(approvedPensioners);
+    } else {
+      // Filter the pensioners based on the search query
+      const filtered = approvedPensioners.filter((pensioner) => {
+        const query = searchQuery.toLowerCase();
+        return (
+          pensioner.fullname?.toLowerCase().includes(query) ||
+          pensioner.senior_citizen_id?.toLowerCase().includes(query) ||
+          pensioner.address?.toLowerCase().includes(query)
+        );
+      });
+      setFilteredPensioners(filtered);
+    }
+  }, [searchQuery, approvedPensioners]);
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
   // Handle opening the edit modal
   const handleOpenEdit = (pensioner) => {
@@ -53,11 +80,11 @@ const ApprovedPensioners = () => {
       console.log(`Pensioner ${pensionerId} payout updated successfully.`);
 
       // Update the local state to reflect the change
-      setApprovedPensioners((prev) =>
-        prev.map((pensioner) =>
-          pensioner.id === pensionerId ? { ...pensioner, payout_amount: newAmount } : pensioner
-        )
+      const updatedPensioners = approvedPensioners.map((pensioner) =>
+        pensioner.id === pensionerId ? { ...pensioner, payout_amount: newAmount } : pensioner
       );
+      
+      setApprovedPensioners(updatedPensioners);
 
       handleCloseModal(); // Close the modal after update
     } catch (error) {
@@ -86,6 +113,8 @@ const ApprovedPensioners = () => {
                 type="text"
                 placeholder="Search pensioners..."
                 className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={searchQuery}
+                onChange={handleSearchChange}
               />
               <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
             </div>
@@ -98,6 +127,11 @@ const ApprovedPensioners = () => {
             <div className="ml-3">
               <p className="text-sm text-green-700">
                 <span className="font-bold">Total Active Pensioners:</span> {approvedPensioners.length}
+                {searchQuery && (
+                  <span className="ml-2">
+                    (Showing {filteredPensioners.length} {filteredPensioners.length === 1 ? 'result' : 'results'})
+                  </span>
+                )}
               </p>
             </div>
           </div>
@@ -146,35 +180,43 @@ const ApprovedPensioners = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {approvedPensioners.map((pensioner) => (
-                <tr key={pensioner.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{pensioner.senior_citizen_id}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{pensioner.fullname}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{pensioner.age}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{pensioner.address.split(',')[0]}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
-                      ₱{pensioner.payout_amount ? parseFloat(pensioner.payout_amount).toLocaleString() : 'N/A'}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      onClick={() => handleOpenEdit(pensioner)}
-                      className="text-blue-600 hover:text-blue-900 mr-4"
-                    >
-                      <Edit className='cursor-pointer' size={18} />
-                    </button>
+              {filteredPensioners.length > 0 ? (
+                filteredPensioners.map((pensioner) => (
+                  <tr key={pensioner.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{pensioner.senior_citizen_id}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{pensioner.fullname}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{pensioner.age}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{pensioner.address.split(',')[0]}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                        ₱{pensioner.payout_amount ? parseFloat(pensioner.payout_amount).toLocaleString() : 'N/A'}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <button
+                        onClick={() => handleOpenEdit(pensioner)}
+                        className="text-blue-600 hover:text-blue-900 mr-4"
+                      >
+                        <Edit className="cursor-pointer" size={18} />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
+                    No pensioners found matching your search criteria.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

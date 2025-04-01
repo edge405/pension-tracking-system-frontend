@@ -27,113 +27,8 @@ const AdminDashboard = () => {
   }
   
   // Mock data for pending verifications
-  const [pendingVerifications, setPendingVerifications] = useState([
-    { 
-      id: 'SC-78901', 
-      firstName: 'Juan', 
-      middleName: 'Dela', 
-      lastName: 'Cruz', 
-      sex: 'Male',
-      age: 68,
-      submissionDate: '2025-03-10',
-      barangay: 'San Isidro',
-      validID: 'senior_id_78901.jpg',
-      status: 'pending'
-    },
-    { 
-      id: 'SC-78902', 
-      firstName: 'Maria', 
-      middleName: 'Santos', 
-      lastName: 'Reyes', 
-      age: 72,
-      submissionDate: '2025-03-12',
-      barangay: 'San Jose',
-      validID: 'senior_id_78902.jpg',
-      status: 'pending'
-    },
-    { 
-      id: 'SC-78903', 
-      firstName: 'Pedro', 
-      middleName: 'Gomez', 
-      lastName: 'Lim', 
-      age: 65,
-      submissionDate: '2025-03-15',
-      barangay: 'Poblacion',
-      validID: 'senior_id_78903.jpg',
-      status: 'pending'
-    },
-  ]);
+  const [pendingVerifications, setPendingVerifications] = useState([]);
   
-  // Mock data for approved pensioners
-  const [approvedPensioners, setApprovedPensioners] = useState([
-    { 
-      id: 'SC-123456', 
-      name: 'Maria Christine Joy Susvilla', 
-      age: 76,
-      barangay: 'Poblacion',
-      address: '123 Rizal Street, Poblacion, Alimodian, Iloilo',
-      pensionAmount: 2000,
-      lastPayoutDate: '2025-02-15',
-      nextPayoutDate: '2025-04-15'
-    },
-    { 
-      id: 'SC-123457', 
-      name: 'Jose Rizal Dela Cruz', 
-      age: 82,
-      barangay: 'San Vicente',
-      address: '45 Bonifacio St, San Vicente, Alimodian, Iloilo',
-      pensionAmount: 2000,
-      lastPayoutDate: '2025-02-15',
-      nextPayoutDate: '2025-04-15'
-    },
-    { 
-      id: 'SC-123458', 
-      name: 'Andres Bonifacio Santos', 
-      age: 70,
-      barangay: 'San Jose',
-      address: '78 Mabini Lane, San Jose, Alimodian, Iloilo',
-      pensionAmount: 2000,
-      lastPayoutDate: '2025-02-15',
-      nextPayoutDate: '2025-04-15'
-    },
-    { 
-      id: 'SC-123459', 
-      name: 'Gabriela Silang Aguinaldo', 
-      age: 68,
-      barangay: 'San Isidro',
-      address: '22 Luna Road, San Isidro, Alimodian, Iloilo',
-      pensionAmount: 2000,
-      lastPayoutDate: '2025-02-15',
-      nextPayoutDate: '2025-04-15'
-    },
-  ]);
-  
-  // Mock data for scheduled payouts
-  const [scheduledPayouts, setScheduledPayouts] = useState([
-    {
-      date: '2025-04-15',
-      location: 'Barangay San Isidro Community Center',
-      address: '123 San Isidro St., Alimodian, Iloilo',
-      totalPensioners: 156,
-      status: 'scheduled'
-    },
-    {
-      date: '2025-03-15',
-      location: 'Barangay San Jose Multi-purpose Hall',
-      address: '45 San Jose Ave., Alimodian, Iloilo',
-      totalPensioners: 148,
-      status: 'released'
-    },
-    {
-      date: '2025-02-15',
-      location: 'Municipal Hall - Senior Citizens Affairs Office',
-      address: '1 Municipal Plaza, Alimodian, Iloilo',
-      totalPensioners: 152,
-      status: 'released'
-    }
-  ]);
-
-  // Handler to open verification modal
   const handleOpenVerification = (pensioner) => {
     setSelectedPensioner(pensioner);
     setShowVerificationModal(true);
@@ -150,32 +45,24 @@ const AdminDashboard = () => {
     setShowScheduleModal(true);
   };
   
-  // Handler for scheduling new payout
-  const handleSchedulePayout = (newPayout) => {
-    setScheduledPayouts([newPayout, ...scheduledPayouts]);
-  };
   
   // Render the active tab content
   const renderContent = () => {
     switch(activeTab) {
       case 'pending':
         return (
-          <PendingVerification 
-            pendingVerifications={pendingVerifications} 
-            handleOpenVerification={handleOpenVerification} 
+          <PendingVerification  
           />
         );
       case 'approved':
         return (
           <ApprovedPensioners 
-            approvedPensioners={approvedPensioners} 
             handleOpenEdit={handleOpenEdit}
           />
         );
       case 'schedule':
         return (
           <SchedulePayout 
-            scheduledPayouts={scheduledPayouts} 
             handleOpenSchedule={handleOpenSchedule} 
           />
         );
@@ -216,7 +103,6 @@ const AdminDashboard = () => {
         <Sidebar 
           activeTab={activeTab} 
           setActiveTab={setActiveTab} 
-          pendingCount={pendingVerifications.length} 
         />
         
         {/* Mobile Navigation */}
@@ -279,14 +165,12 @@ const AdminDashboard = () => {
         <EditModal 
           selectedPensioner={selectedPensioner}
           onClose={() => setShowEditModal(false)}
-          onUpdate={handleUpdatePension}
         />
       )}
       
       {showScheduleModal && (
         <ScheduleModal 
           onClose={() => setShowScheduleModal(false)}
-          onSchedule={handleSchedulePayout}
         />
       )}
     </div>

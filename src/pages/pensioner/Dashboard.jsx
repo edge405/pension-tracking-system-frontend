@@ -11,7 +11,6 @@ const Dashboard = ({ setActiveTab }) => {
   const [error, setError] = useState(null);
   const { token } = useContext(AuthContext);
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -40,6 +39,26 @@ const Dashboard = ({ setActiveTab }) => {
     return <div className='text-center'>Loading...</div>;
   }
 
+  // Helper function to find the earliest future payout date
+  const getNextPayoutNotification = () => {
+    const today = new Date();
+    const futureNotifications = notifications.filter(notification => {
+      const payoutDate = new Date(notification.payout_date);
+      return payoutDate > today; // Only consider future dates
+    });
+
+    if (futureNotifications.length === 0) {
+      return null; // No future notifications
+    }
+
+    // Find the notification with the earliest payout date
+    return futureNotifications.reduce((earliest, current) => {
+      return new Date(current.payout_date) < new Date(earliest.payout_date) ? current : earliest;
+    });
+  };
+
+  const nextPayoutNotification = getNextPayoutNotification();
+
   return (
     <div className="p-8 bg-white rounded-xl shadow-lg">
       <h2 className="text-3xl font-bold text-gray-800 mb-6">Welcome, {pensionerInfo?.fullname || 'User'}!</h2>
@@ -49,14 +68,22 @@ const Dashboard = ({ setActiveTab }) => {
           <div>
             <h3 className="text-xl font-semibold mb-2">Next Pension Payment</h3>
             <p className="text-base">
-              <span className="font-bold">{formatDate(notifications[0]?.payout_date) || 'N/A'}</span> -{' '}
-              <span className="text-xl font-bold">₱{pensionerInfo?.payout_amount || 'N/A'}</span>
+              <span className="font-bold">
+                {nextPayoutNotification
+                  ? formatDate(nextPayoutNotification.payout_date)
+                  : 'N/A'}
+              </span> -{' '}
+              <span className="text-xl font-bold">
+                ₱{pensionerInfo?.payout_amount || 'N/A'}
+              </span>
             </p>
             <p className="text-base mt-1">
-              <span className="opacity-80">Location:</span> {notifications[0]?.location || 'N/A'}
+              <span className="opacity-80">Location:</span>{' '}
+              {nextPayoutNotification?.location || 'N/A'}
             </p>
             <p className="text-base mt-1">
-              <span className="opacity-80">Time:</span> {notifications[0]?.time || 'N/A'}
+              <span className="opacity-80">Time:</span>{' '}
+              {nextPayoutNotification?.time || 'N/A'}
             </p>
           </div>
         </div>
@@ -98,19 +125,19 @@ const Dashboard = ({ setActiveTab }) => {
             <h3 className="text-xl font-semibold text-gray-800">Notifications</h3>
           </div>
           <ul className="space-y-4">
-        {notifications.slice(0, 3).map((notification) => (
-          <li 
-            key={notification.id} 
-            className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg shadow-sm hover:bg-blue-100 transition-colors duration-200"
-          >
-            <div className="flex justify-between items-start">
-              <div className="ml-1">
-                <p className="text-gray-800 font-medium">{notification.message}</p>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+            {notifications.slice(0, 3).map((notification) => (
+              <li
+                key={notification.id}
+                className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg shadow-sm hover:bg-blue-100 transition-colors duration-200"
+              >
+                <div className="flex justify-between items-start">
+                  <div className="ml-1">
+                    <p className="text-gray-800 font-medium">{notification.message}</p>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
 
           <button
             className="mt-6 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors duration-200 flex items-center w-full justify-center cursor-pointer"

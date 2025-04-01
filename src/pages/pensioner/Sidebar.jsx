@@ -8,7 +8,6 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
   const [error, setError] = useState(null);
   const { token } = useContext(AuthContext);
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {

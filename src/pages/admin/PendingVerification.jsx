@@ -3,6 +3,7 @@ import { Search, AlertCircle, Eye } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import { getPendingPensioners, updatePensionerStatus } from '../services/admin_api';
 import VerificationModal from './VerificationModal'; // Import the modal component
+import Sidebar from './Sidebar';
 
 const PendingVerification = () => {
   const [pendingVerifications, setPendingVerifications] = useState([]);
@@ -253,6 +254,7 @@ const PendingVerification = () => {
       )}
     </div>
   );
+  
 };
 
 export default PendingVerification;

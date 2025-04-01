@@ -37,7 +37,7 @@ const VerificationModal = ({ selectedPensioner, onClose, onApprove, onReject }) 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Senior Citizen ID</label>
               <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
-                {selectedPensioner.id}
+                {selectedPensioner.senior_citizen_id}
               </div>
             </div>
 

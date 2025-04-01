@@ -122,3 +122,31 @@ export const getSchedulePayouts = async (token) => {
     handleError(error);
   }
 };
+
+// Get system alerts
+export const getSystemAlert = async (token) => {
+  try {
+    const response = await axios.get('/api/admin/system-alert', {
+      auth: {
+        username: token,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+// set schedule payouts
+export const setSchedulePayouts = async (token, payload) => {
+  try {
+    const response = await axios.post('/api/admin/schedule-payout', payload, {
+      auth: {
+        username: token,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
