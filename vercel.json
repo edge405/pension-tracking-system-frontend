@@ -4,5 +4,14 @@
         "source": "/api/:path*",
         "destination": "https://https://pts-backend-6a6f.onrender.com/api/:path*"
       }
+    ],
+    "routes": [
+      {
+        "handle": "filesystem"
+      },
+      {
+        "src": "/.*",
+        "dest": "/index.html"
+      }
     ]
 }

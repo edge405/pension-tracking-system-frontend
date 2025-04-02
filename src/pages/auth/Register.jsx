@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { UserPlus, User, Lock, MapPin, Phone, Camera, FilePlus } from 'lucide-react';
 import axios from '../../axios';
+import { Link } from 'react-router-dom';
 
 const Register = () => {
   const [password, setPassword] = useState('');
@@ -329,9 +330,9 @@ const Register = () => {
             {/* Login Link */}
             <p className="mt-4 text-center text-sm text-gray-600">
               Already have an account?{' '}
-              <a href="/" className="text-blue-600 hover:underline font-medium">
+              <Link to="/" className="text-blue-600 hover:underline font-medium">
                 Login here
-              </a>
+              </Link>
             </p>
           </form>
         </div>

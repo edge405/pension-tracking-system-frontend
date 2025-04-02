@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { LogIn, User, Lock } from 'lucide-react';
 import axios from '../../axios';
 
@@ -112,9 +113,9 @@ const PensionerLogin = () => {
             </button>
             <p className="mt-4 text-center text-sm text-gray-600">
               Don't have an account?{' '}
-              <a href="/register" className="text-blue-600 hover:underline font-medium">
+              <Link to="/register" className="text-blue-600 hover:underline font-medium">
                 Register here
-              </a>
+              </Link>
             </p>
           </form>
         </div>
