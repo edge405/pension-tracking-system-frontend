@@ -23,7 +23,6 @@ const AdminLogin = () => {
           password: password
         }
       });
-      console.log(response.data);
       
       const { access_token, user_type } = response.data;
       login(access_token, user_type);

@@ -12,7 +12,6 @@ const Profile = () => {
     const fetchData = async () => {
       try {
         const profileData = await getPensionerProfile(token);
-        console.log(profileData);
         setPensionerInfo(profileData);
       } catch (err) {
         console.error('Error fetching profile:', err);

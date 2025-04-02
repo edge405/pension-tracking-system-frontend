@@ -16,7 +16,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
       try {
         setIsLoading(true); // Start loading
         const systemAlertData = await getSystemAlert(token);
-        console.log("system data: ", systemAlertData);
+
         
         setSystemAlert(systemAlertData); // Set fetched data
       } catch (err) {

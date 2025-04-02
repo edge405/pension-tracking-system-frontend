@@ -20,7 +20,6 @@ const PendingVerification = () => {
     const fetchPendingPensioners = async () => {
       try {
         const response = await getPendingPensioners(token);
-        console.log("Pending response: ", response);
 
         if (response && Array.isArray(response)) {
           setPendingVerifications(response);
@@ -76,7 +75,6 @@ const PendingVerification = () => {
   const handleApprove = async (payoutAmount) => {
     try {
       await updatePensionerStatus(selectedPensioner.id, 'approved', payoutAmount, token);
-      console.log(`Pensioner ${selectedPensioner.fullname} approved successfully.`);
 
       // Update the local state to reflect the change
       const updatedPensioners = pendingVerifications.filter(
@@ -98,7 +96,6 @@ const PendingVerification = () => {
   const handleReject = async () => {
     try {
       await updatePensionerStatus(selectedPensioner.id, 'rejected', null, token);
-      console.log(`Pensioner ${selectedPensioner.fullname} rejected successfully.`);
 
       // Update the local state to reflect the change
       const updatedPensioners = pendingVerifications.filter(
@@ -192,7 +189,7 @@ const PendingVerification = () => {
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Barangay
+                  Address
                 </th>
                 <th
                   scope="col"

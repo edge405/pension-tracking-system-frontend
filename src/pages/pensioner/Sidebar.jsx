@@ -12,7 +12,6 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
     const fetchData = async () => {
       try {
         const profileData = await getPensionerProfile(token);
-        console.log(profileData);
         setPensionerInfo(profileData);
       } catch (err) {
         console.error('Error fetching profile:', err);

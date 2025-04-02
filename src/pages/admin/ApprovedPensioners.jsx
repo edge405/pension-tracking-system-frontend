@@ -19,7 +19,6 @@ const ApprovedPensioners = () => {
     const fetchApprovedPensioners = async () => {
       try {
         const response = await getApprovedPensioners(token); // Fetch approved pensioners
-        console.log("Approved Pensioners Response: ", response);
 
         // Ensure the response contains the expected data structure
         if (response && Array.isArray(response)) {
@@ -77,7 +76,6 @@ const ApprovedPensioners = () => {
   const handleUpdatePayout = async (pensionerId, newAmount) => {
     try {
       await updatePensionerPayout(pensionerId, newAmount, token);
-      console.log(`Pensioner ${pensionerId} payout updated successfully.`);
 
       // Update the local state to reflect the change
       const updatedPensioners = approvedPensioners.map((pensioner) =>
@@ -163,7 +161,7 @@ const ApprovedPensioners = () => {
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Barangay
+                  Address
                 </th>
                 <th
                   scope="col"

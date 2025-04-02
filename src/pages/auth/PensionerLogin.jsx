@@ -27,7 +27,6 @@ const PensionerLogin = () => {
           password: password,
         },
       });
-      console.log(response.data);
 
       const { token, user_type, pensioner } = response.data;
       if (pensioner?.status !== 'approved') {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { XCircle, CheckCircle } from 'lucide-react';
+import { XCircle, CheckCircle, User } from 'lucide-react';
 import { formatDate } from '../services/formatDate';
 
 const VerificationModal = ({ selectedPensioner, onClose, onApprove, onReject }) => {
@@ -119,17 +119,14 @@ const VerificationModal = ({ selectedPensioner, onClose, onApprove, onReject }) 
             <div className="h-96 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center overflow-hidden">
               {selectedPensioner.valid_id ? (
                 <img
-                src={
-                  selectedPensioner.valid_id
-                    ? `${import.meta.env.VITE_PTS_BACKEND_SERVER}/${selectedPensioner.valid_id}`
-                    : `${import.meta.env.VITE_PTS_BACKEND_SERVER}/src/static/uploads/image.png`
-                }                
+                  src={`${import.meta.env.VITE_PTS_BACKEND_SERVER}/${selectedPensioner.valid_id}`}
                   alt="Valid ID"
                   className="w-full h-full object-contain"
                 />
               ) : (
-                <div className="text-center p-4">
-                  <p className="text-gray-500">No Valid ID Uploaded</p>
+                <div className="flex flex-col items-center justify-center">
+                  <User size={200} className="text-gray-400" />
+                  {/* <p className="text-gray-500 mt-4">No Valid ID Provided</p> */}
                 </div>
               )}
             </div>

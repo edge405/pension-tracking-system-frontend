@@ -64,8 +64,6 @@ const Register = () => {
         }
       );
 
-      // Handle successful response
-      console.log('Registration successful:', response.data);
       alert(response.data.message || 'Registration successful!');
       // Reset form fields after submission
       setPassword('');
