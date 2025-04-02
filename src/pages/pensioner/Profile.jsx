@@ -66,6 +66,11 @@ const Profile = () => {
               </div>
 
               <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Civil Status</label>
+                <div className="p-3 bg-white rounded-lg border border-gray-200">{pensionerInfo?.civil_status || 'N/A'}</div>
+              </div>
+
+              <div>
                 <label className="block text-sm font-medium text-gray-600 mb-1">Birthdate</label>
                 <div className="p-3 bg-white rounded-lg border border-gray-200">{pensionerInfo?.birthdate || 'N/A'}</div>
               </div>

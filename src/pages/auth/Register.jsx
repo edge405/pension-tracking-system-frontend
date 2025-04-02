@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { UserPlus, User, Lock, MapPin, Phone, Camera, FilePlus } from 'lucide-react';
-import axios from '../../axios'
+import axios from '../../axios';
 
 const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [idFile, setIdFile] = useState(null);
-  const [sex, setSex] = useState(''); // Add state for sex
+  const [sex, setSex] = useState(''); // State for sex
+  const [civilStatus, setCivilStatus] = useState(''); // Add state for civil status
 
   const handleIdFileChange = (e) => {
     const file = e.target.files[0];
@@ -15,7 +16,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
-  
+
     // Validate form fields
     if (!password || !confirmPassword || password !== confirmPassword) {
       alert('Passwords do not match or are missing.');
@@ -29,7 +30,11 @@ const Register = () => {
       alert('Please select your gender.');
       return;
     }
-  
+    if (!civilStatus) {
+      alert('Please select your civil status.');
+      return;
+    }
+
     // Create FormData object
     const formData = new FormData();
     formData.append('fullname', e.target.name.value);
@@ -40,7 +45,8 @@ const Register = () => {
     formData.append('password', password);
     formData.append('valid_id', idFile); // Append the file
     formData.append('sex', sex);
-  
+    formData.append('civil_status', civilStatus); // Append civil status
+
     try {
       // Send POST request to the backend
       const response = await axios.post(
@@ -52,16 +58,16 @@ const Register = () => {
           },
         }
       );
-  
+
       // Handle successful response
       console.log('Registration successful:', response.data);
       alert(response.data.message || 'Registration successful!');
-  
       // Reset form fields after submission
       setPassword('');
       setConfirmPassword('');
       setIdFile(null);
       setSex('');
+      setCivilStatus(''); // Reset civil status
       e.target.reset();
     } catch (error) {
       // Handle error response
@@ -103,7 +109,6 @@ const Register = () => {
                 />
               </div>
             </div>
-
             {/* Sex Field */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-600 mb-1">Sex</label>
@@ -132,7 +137,29 @@ const Register = () => {
                 </label>
               </div>
             </div>
-
+            {/* Civil Status Field */}
+            <div className="mb-6">
+              <label htmlFor="civilStatus" className="block text-sm font-medium text-gray-600 mb-1">
+                Civil Status
+              </label>
+              <div className="relative">
+                <select
+                  id="civilStatus"
+                  name="civilStatus"
+                  value={civilStatus}
+                  onChange={(e) => setCivilStatus(e.target.value)}
+                  className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                >
+                  <option value="" disabled>Select your civil status</option>
+                  <option value="Single">Single</option>
+                  <option value="Married">Married</option>
+                  <option value="Widowed">Widowed</option>
+                  <option value="Divorced">Divorced</option>
+                  <option value="Separated">Separated</option>
+                </select>
+              </div>
+            </div>
             {/* Senior Citizen ID */}
             <div className="mb-6">
               <label htmlFor="id" className="block text-sm font-medium text-gray-600 mb-1">
@@ -150,7 +177,6 @@ const Register = () => {
                 />
               </div>
             </div>
-
             {/* Birthdate */}
             <div className="mb-6">
               <label htmlFor="birthdate" className="block text-sm font-medium text-gray-600 mb-1">
@@ -166,7 +192,6 @@ const Register = () => {
                 />
               </div>
             </div>
-
             {/* Contact Number */}
             <div className="mb-6">
               <label htmlFor="contact" className="block text-sm font-medium text-gray-600 mb-1">
@@ -184,7 +209,6 @@ const Register = () => {
                 />
               </div>
             </div>
-
             {/* Address */}
             <div className="mb-6">
               <label htmlFor="address" className="block text-sm font-medium text-gray-600 mb-1">
@@ -202,7 +226,6 @@ const Register = () => {
                 />
               </div>
             </div>
-
             {/* Password */}
             <div className="mb-6">
               <label htmlFor="password" className="block text-sm font-medium text-gray-600 mb-1">
@@ -222,7 +245,6 @@ const Register = () => {
                 />
               </div>
             </div>
-
             {/* Confirm Password */}
             <div className="mb-6">
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-600 mb-1">
@@ -242,7 +264,6 @@ const Register = () => {
                 />
               </div>
             </div>
-
             {/* Upload Valid ID with Selfie */}
             <div className="mb-6">
               <label htmlFor="idFile" className="block text-sm font-medium text-gray-700 mb-2">
@@ -298,7 +319,6 @@ const Register = () => {
                 </div>
               )}
             </div>
-
             {/* Submit Button */}
             <button
               type="submit"
@@ -306,7 +326,6 @@ const Register = () => {
             >
               Register
             </button>
-
             {/* Login Link */}
             <p className="mt-4 text-center text-sm text-gray-600">
               Already have an account?{' '}

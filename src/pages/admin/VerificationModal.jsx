@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { XCircle, CheckCircle } from 'lucide-react';
+import { formatDate } from '../services/formatDate';
 
 const VerificationModal = ({ selectedPensioner, onClose, onApprove, onReject }) => {
   if (!selectedPensioner) return null;
@@ -27,7 +28,7 @@ const VerificationModal = ({ selectedPensioner, onClose, onApprove, onReject }) 
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
           >
-            <XCircle className='cursor-pointer' size={24} />
+            <XCircle className="cursor-pointer" size={24} />
           </button>
         </div>
 
@@ -51,7 +52,7 @@ const VerificationModal = ({ selectedPensioner, onClose, onApprove, onReject }) 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Birth Date</label>
               <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
-                {`${selectedPensioner.birthdate}`}
+                {`${formatDate(selectedPensioner.birthdate)}`}
               </div>
             </div>
 
@@ -59,6 +60,18 @@ const VerificationModal = ({ selectedPensioner, onClose, onApprove, onReject }) 
               <label className="block text-sm font-medium text-gray-700 mb-1">Sex</label>
               <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
                 {selectedPensioner.sex ?? "None"}
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Civil Status</label>
+              <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                {selectedPensioner.civil_status ?? "None"}
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Contact Number</label>
+              <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                {selectedPensioner.contact_number ?? "None"}
               </div>
             </div>
 
@@ -72,7 +85,7 @@ const VerificationModal = ({ selectedPensioner, onClose, onApprove, onReject }) 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Submission Date</label>
               <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
-                {selectedPensioner.created_at}
+                {formatDate(selectedPensioner.created_at)}
               </div>
             </div>
 
@@ -101,21 +114,24 @@ const VerificationModal = ({ selectedPensioner, onClose, onApprove, onReject }) 
           </div>
 
           {/* Right Column (Valid ID Section) */}
-          <div>
+          <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700 mb-1">Valid ID</label>
-            <div className="h-48 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center">
-              <div className="text-center">
-                {/* Dynamically display the valid ID image */}
+            <div className="h-96 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center overflow-hidden">
+              {selectedPensioner.valid_id ? (
                 <img
-                  src={`${import.meta.env.VITE_PTS_BACKEND_SERVER}/${selectedPensioner.valid_id}`}
-                  alt="Valid ID Preview"
-                  className="mx-auto rounded-lg max-h-full max-w-full object-contain"
+                src={
+                  selectedPensioner.valid_id
+                    ? `${import.meta.env.VITE_PTS_BACKEND_SERVER}/${selectedPensioner.valid_id}`
+                    : `${import.meta.env.VITE_PTS_BACKEND_SERVER}/src/static/uploads/image.png`
+                }                
+                  alt="Valid ID"
+                  className="w-full h-full object-contain"
                 />
-                {/* Fallback text if the image is missing */}
-                {!selectedPensioner.valid_id && (
-                  <p className="text-gray-500 text-xs mt-2">No Valid ID Uploaded</p>
-                )}
-              </div>
+              ) : (
+                <div className="text-center p-4">
+                  <p className="text-gray-500">No Valid ID Uploaded</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

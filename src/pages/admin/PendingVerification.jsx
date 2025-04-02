@@ -2,16 +2,16 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Search, AlertCircle, Eye } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import { getPendingPensioners, updatePensionerStatus } from '../services/admin_api';
-import VerificationModal from './VerificationModal'; // Import the modal component
+import VerificationModal from './VerificationModal';
 import Sidebar from './Sidebar';
 
 const PendingVerification = () => {
   const [pendingVerifications, setPendingVerifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedPensioner, setSelectedPensioner] = useState(null); // Track selected pensioner for modal
-  const [searchTerm, setSearchTerm] = useState(''); // State for search term
-  const [filteredPensioners, setFilteredPensioners] = useState([]); // Filtered results
+  const [selectedPensioner, setSelectedPensioner] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredPensioners, setFilteredPensioners] = useState([]);
 
   const { token } = useContext(AuthContext);
 
@@ -19,13 +19,12 @@ const PendingVerification = () => {
   useEffect(() => {
     const fetchPendingPensioners = async () => {
       try {
-        const response = await getPendingPensioners(token); // Fetch pending pensioners
+        const response = await getPendingPensioners(token);
         console.log("Pending response: ", response);
 
-        // Ensure the response contains the expected data structure
         if (response && Array.isArray(response)) {
-          setPendingVerifications(response); // Set fetched data to state
-          setFilteredPensioners(response); // Initialize filtered results with all pensioners
+          setPendingVerifications(response);
+          setFilteredPensioners(response);
         } else {
           throw new Error('Invalid response format');
         }
@@ -65,12 +64,12 @@ const PendingVerification = () => {
 
   // Handle opening the verification modal
   const handleOpenVerification = (pensioner) => {
-    setSelectedPensioner(pensioner); // Open modal with selected pensioner
+    setSelectedPensioner(pensioner);
   };
 
   // Handle closing the modal
   const handleCloseModal = () => {
-    setSelectedPensioner(null); // Close modal
+    setSelectedPensioner(null);
   };
 
   // Handle approving a pensioner
@@ -127,7 +126,7 @@ const PendingVerification = () => {
 
   return (
     <div>
-      {/* Render the table */}
+      {/* Main content */}
       <div className="bg-white rounded-xl shadow-lg p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">Pending Verification</h2>
@@ -160,7 +159,8 @@ const PendingVerification = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Simple table with overflow-x-auto and max-height */}
+        <div className="overflow-x-auto" style={{ maxHeight: '60vh' }}>
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
@@ -219,7 +219,9 @@ const PendingVerification = () => {
                       <div className="text-sm text-gray-900">{new Date(pensioner.created_at).toLocaleDateString()}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{pensioner.address.split(',')[0]}</div>
+                      <div className="text-sm text-gray-900">
+                        {pensioner.address ? pensioner.address.split(',')[0] : 'N/A'}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
@@ -243,7 +245,7 @@ const PendingVerification = () => {
         </div>
       </div>
 
-      {/* Render the modal */}
+      {/* Verification Modal */}
       {selectedPensioner && (
         <VerificationModal
           selectedPensioner={selectedPensioner}
@@ -254,7 +256,6 @@ const PendingVerification = () => {
       )}
     </div>
   );
-  
 };
 
 export default PendingVerification;
