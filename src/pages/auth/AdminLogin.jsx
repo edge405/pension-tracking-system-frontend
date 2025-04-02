@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { LogIn, User, Lock, Shield } from 'lucide-react';
+import { LogIn, User, Lock, Shield, Loader } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../axios';
 
@@ -8,11 +8,14 @@ import axios from '../../axios';
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    
     try {
       const response = await axios.get('/api/admin/login', {
         auth: {
@@ -22,11 +25,13 @@ const AdminLogin = () => {
       });
       console.log(response.data);
       
-      const { access_token , user_type } = response.data;
+      const { access_token, user_type } = response.data;
       login(access_token, user_type);
       navigate('/admin-dashboard');
     } catch (error) {
       console.error('Admin login failed:', error.response?.data?.error || 'Unknown error');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -68,6 +73,7 @@ const AdminLogin = () => {
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   placeholder="Enter admin username"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -86,15 +92,26 @@ const AdminLogin = () => {
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   placeholder="Enter your password"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
             <button
               type="submit"
               className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors duration-200 cursor-pointer flex justify-center items-center"
+              disabled={isLoading}
             >
-              <LogIn size={20} className="mr-2" />
-              Sign in to Admin Portal
+              {isLoading ? (
+                <>
+                  <Loader size={20} className="mr-2 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  <LogIn size={20} className="mr-2" />
+                  Sign in to Admin Portal
+                </>
+              )}
             </button>
           </form>
           

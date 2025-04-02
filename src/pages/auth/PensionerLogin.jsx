@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { LogIn, User, Lock } from 'lucide-react';
+import { LogIn, User, Lock, Loader } from 'lucide-react';
 import axios from '../../axios';
 
 const PensionerLogin = () => {
@@ -10,6 +10,7 @@ const PensionerLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(''); // State to handle error messages
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -17,6 +18,7 @@ const PensionerLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(''); // Clear any previous errors
+    setIsLoading(true); // Set loading to true when form is submitted
 
     try {
       const response = await axios.get('/api/pensioner/login', {
@@ -44,6 +46,8 @@ const PensionerLogin = () => {
       setTimeout(() => {
         setError('');
       }, 3000);
+    } finally {
+      setIsLoading(false); // Set loading back to false regardless of success or failure
     }
   };
 
@@ -86,6 +90,7 @@ const PensionerLogin = () => {
                   onChange={(e) => setUsername(e.target.value)} // Update state on change
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your Senior Citizen ID"
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -102,14 +107,23 @@ const PensionerLogin = () => {
                   onChange={(e) => setPassword(e.target.value)} // Update state on change
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your password"
+                  disabled={isLoading}
                 />
               </div>
             </div>
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 cursor-pointer"
+              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 cursor-pointer flex justify-center items-center"
+              disabled={isLoading}
             >
-              Login
+              {isLoading ? (
+                <>
+                  <Loader size={20} className="mr-2 animate-spin" />
+                  Logging in...
+                </>
+              ) : (
+                'Login'
+              )}
             </button>
             <p className="mt-4 text-center text-sm text-gray-600">
               Don't have an account?{' '}

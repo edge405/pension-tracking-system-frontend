@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UserPlus, User, Lock, MapPin, Phone, Camera, FilePlus } from 'lucide-react';
+import { UserPlus, User, Lock, MapPin, Phone, Camera, Loader } from 'lucide-react';
 import axios from '../../axios';
 import { Link } from 'react-router-dom';
 
@@ -9,6 +9,7 @@ const Register = () => {
   const [idFile, setIdFile] = useState(null);
   const [sex, setSex] = useState(''); // State for sex
   const [civilStatus, setCivilStatus] = useState(''); // Add state for civil status
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   const handleIdFileChange = (e) => {
     const file = e.target.files[0];
@@ -35,6 +36,9 @@ const Register = () => {
       alert('Please select your civil status.');
       return;
     }
+
+    // Set loading state to true
+    setIsLoading(true);
 
     // Create FormData object
     const formData = new FormData();
@@ -74,6 +78,9 @@ const Register = () => {
       // Handle error response
       console.error('Error during registration:', error.response?.data || error.message);
       alert(error.response?.data?.error || 'An error occurred during registration.');
+    } finally {
+      // Set loading state back to false
+      setIsLoading(false);
     }
   };
 
@@ -107,6 +114,7 @@ const Register = () => {
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your full name"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -122,6 +130,7 @@ const Register = () => {
                     checked={sex === 'male'}
                     onChange={(e) => setSex(e.target.value)}
                     className="form-radio text-blue-500"
+                    disabled={isLoading}
                   />
                   <span className="ml-2 text-gray-700">Male</span>
                 </label>
@@ -133,6 +142,7 @@ const Register = () => {
                     checked={sex === 'female'}
                     onChange={(e) => setSex(e.target.value)}
                     className="form-radio text-blue-500"
+                    disabled={isLoading}
                   />
                   <span className="ml-2 text-gray-700">Female</span>
                 </label>
@@ -151,6 +161,7 @@ const Register = () => {
                   onChange={(e) => setCivilStatus(e.target.value)}
                   className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
+                  disabled={isLoading}
                 >
                   <option value="" disabled>Select your civil status</option>
                   <option value="Single">Single</option>
@@ -175,6 +186,7 @@ const Register = () => {
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your Senior Citizen ID"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -190,6 +202,7 @@ const Register = () => {
                   name="birthdate"
                   className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -207,6 +220,7 @@ const Register = () => {
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your contact number"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -224,6 +238,7 @@ const Register = () => {
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your address"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -243,6 +258,7 @@ const Register = () => {
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Create a password"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -262,6 +278,7 @@ const Register = () => {
                   className={`w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                   placeholder="Re-enter your password"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -287,6 +304,7 @@ const Register = () => {
                     accept="image/*"
                     onChange={handleIdFileChange}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -313,6 +331,7 @@ const Register = () => {
                       type="button"
                       className="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors duration-200 font-medium"
                       onClick={() => setIdFile(null)}
+                      disabled={isLoading}
                     >
                       Remove
                     </button>
@@ -323,9 +342,17 @@ const Register = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-500 transition-colors duration-200 cursor-pointer"
+              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-500 transition-colors duration-200 cursor-pointer flex justify-center items-center"
+              disabled={isLoading}
             >
-              Register
+              {isLoading ? (
+                <>
+                  <Loader size={20} className="mr-2 animate-spin" />
+                  Registering...
+                </>
+              ) : (
+                'Register'
+              )}
             </button>
             {/* Login Link */}
             <p className="mt-4 text-center text-sm text-gray-600">
