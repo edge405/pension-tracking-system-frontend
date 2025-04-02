@@ -1,6 +1,8 @@
 {
     "rewrites": [
-      { "source": "/(.*)", "destination": "/index.html" }
+      {
+        "source": "/api/:path*",
+        "destination": "https://https://pts-backend-6a6f.onrender.com/api/:path*"
+      }
     ]
   }
-  
