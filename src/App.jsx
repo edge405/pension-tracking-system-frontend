@@ -12,7 +12,7 @@ import { AuthProvider } from './context/AuthContext'; // Create this context lat
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <Router basename="/">
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<PensionerLogin />} />
