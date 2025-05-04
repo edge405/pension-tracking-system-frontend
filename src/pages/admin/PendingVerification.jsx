@@ -4,6 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { getPendingPensioners, updatePensionerStatus } from '../services/admin_api';
 import VerificationModal from './VerificationModal';
 import Sidebar from './Sidebar';
+import { ToastContainer, toast } from 'react-toastify';
 
 const PendingVerification = () => {
   const [pendingVerifications, setPendingVerifications] = useState([]);
@@ -74,7 +75,7 @@ const PendingVerification = () => {
   // Handle approving a pensioner
   const handleApprove = async (payoutAmount) => {
     try {
-      await updatePensionerStatus(selectedPensioner.id, 'approved', payoutAmount, token);
+      const response = await updatePensionerStatus(selectedPensioner.id, 'approved', payoutAmount, token);
 
       // Update the local state to reflect the change
       const updatedPensioners = pendingVerifications.filter(
@@ -84,7 +85,7 @@ const PendingVerification = () => {
       setFilteredPensioners(
         filteredPensioners.filter((pensioner) => pensioner.id !== selectedPensioner.id)
       );
-
+      toast.success(response.message || 'Pensioner approved successfully!');
       handleCloseModal();
     } catch (error) {
       console.error('Failed to approve pensioner:', error.message);
@@ -95,7 +96,7 @@ const PendingVerification = () => {
   // Handle rejecting a pensioner
   const handleReject = async () => {
     try {
-      await updatePensionerStatus(selectedPensioner.id, 'rejected', null, token);
+      const response = await updatePensionerStatus(selectedPensioner.id, 'rejected', null, token);
 
       // Update the local state to reflect the change
       const updatedPensioners = pendingVerifications.filter(
@@ -105,11 +106,11 @@ const PendingVerification = () => {
       setFilteredPensioners(
         filteredPensioners.filter((pensioner) => pensioner.id !== selectedPensioner.id)
       );
-
+      toast.info(response.message || 'Pensioner rejected successfully!');
       handleCloseModal();
     } catch (error) {
       console.error('Failed to reject pensioner:', error.message);
-      alert('Failed to reject pensioner. Please try again.');
+      toast.error('Failed to reject pensioner. Please try again.');
     }
   };
 
@@ -251,6 +252,7 @@ const PendingVerification = () => {
           onReject={handleReject}
         />
       )}
+      <ToastContainer/>
     </div>
   );
 };

@@ -1,8 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { LogIn, User, Lock, Loader } from 'lucide-react';
+import { LogIn, User, Lock, Loader, AlertTriangle } from 'lucide-react';
 import axios from '../../axios';
 
 const PensionerLogin = () => {
@@ -29,37 +29,60 @@ const PensionerLogin = () => {
       });
 
       const { token, user_type, pensioner } = response.data;
+      
+      // Check pensioner status
       if (pensioner?.status !== 'approved') {
         setError('Your account is still under verification. Please wait for approval.');
-        setTimeout(() => {
-          setError('');
-        }, 3000);
         return;
       }
   
       login(token, user_type, pensioner);
       navigate('/pensioner-dashboard');
     } catch (error) {
-      setError(error.response?.data?.error || 'Invalid Credentials. Please try again');
-
-      setTimeout(() => {
-        setError('');
-      }, 3000);
+      // Handle specific error cases
+      if (error.response) {
+        if (error.response.status === 401) {
+          setError('Invalid Senior Citizen ID or password. Please try again.');
+        } else if (error.response.status === 403) {
+          setError('Your account has been suspended. Please contact the administrator.');
+        } else if (error.response.data?.error) {
+          setError(error.response.data.error);
+        } else {
+          setError('Login failed. Please try again later.');
+        }
+      } else if (error.request) {
+        setError('Network error. Please check your connection and try again.');
+      } else {
+        setError('An unexpected error occurred. Please try again later.');
+      }
     } finally {
       setIsLoading(false); // Set loading back to false regardless of success or failure
     }
   };
 
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError('');
+      }, 3000); // Hide after 3 seconds
+  
+      return () => clearTimeout(timer); // Cleanup on unmount or error change
+    }
+  }, [error]);
+  
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-gradient-to-r from-blue-700 to-blue-600 text-white p-4 shadow-lg">
-        <div className="container mx-auto flex justify-between items-center">
+      <Link to="/">
+        <div className="container mx-auto flex justify-between items-center cursor-pointer">
           <h1 className="text-2xl font-bold flex items-center">
             <LogIn className="mr-2" />
             Senior Citizens Pension System
           </h1>
         </div>
+        </Link>
       </header>
 
       {/* Main Content */}
@@ -67,11 +90,11 @@ const PensionerLogin = () => {
         <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Login</h2>
 
-          {/* Error Message Section */}
+          {/* Error Message Section - Using improved styling */}
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-              <strong className="font-bold">Error: </strong>
-              <span className="block sm:inline">{error}</span>
+            <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-800 rounded-md flex items-start" role="alert">
+              <AlertTriangle size={20} className="text-red-600 mr-2 mt-0.5 flex-shrink-0" />
+              <span>{error}</span>
             </div>
           )}
 
@@ -89,6 +112,7 @@ const PensionerLogin = () => {
                   onChange={(e) => setUsername(e.target.value)} // Update state on change
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your Senior Citizen ID"
+                  required
                   disabled={isLoading}
                 />
               </div>
@@ -106,6 +130,7 @@ const PensionerLogin = () => {
                   onChange={(e) => setPassword(e.target.value)} // Update state on change
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your password"
+                  required
                   disabled={isLoading}
                 />
               </div>
@@ -121,7 +146,10 @@ const PensionerLogin = () => {
                   Logging in...
                 </>
               ) : (
-                'Login'
+                <>
+                  <LogIn size={20} className="mr-2" />
+                  Login
+                </>
               )}
             </button>
             <p className="mt-4 text-center text-sm text-gray-600">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ClipboardCheck, Users, Calendar, AlertCircle } from 'lucide-react';
+import { ClipboardCheck, Users, Calendar, AlertCircle, User } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import { getSystemAlert } from '../services/admin_api';
 import { formatDate } from '../services/formatDate';
@@ -52,6 +52,18 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
         {/* Navigation */}
         <nav>
           <ul className="space-y-3">
+          <li>
+            <button
+              className={`w-full text-left px-4 py-3 rounded-lg flex items-center transition-all duration-200
+              ${activeTab === 'profile' 
+                ? 'bg-blue-600 text-white shadow-md font-medium' 
+                : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}
+              onClick={() => setActiveTab('profile')}
+            >
+              <User size={18} className={`${activeTab === 'profile' ? 'mr-3' : 'mr-3 text-blue-500'}`} />
+              Profile Settings
+            </button>
+          </li>
             <li>
               <button
                 className={`w-full text-left px-4 py-3 rounded-lg flex items-center transition-all duration-200 

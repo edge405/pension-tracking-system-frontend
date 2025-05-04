@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { XCircle, CheckCircle, User } from 'lucide-react';
 import { formatDate } from '../services/formatDate';
 
 const VerificationModal = ({ selectedPensioner, onClose, onApprove, onReject }) => {
-  if (!selectedPensioner) return null;
-
-  // State for payout amount and error handling
+    // State for payout amount and error handling
   const [payoutAmount, setPayoutAmount] = useState(selectedPensioner.payout_amount || '');
   const [error, setError] = useState('');
+
+  if (!selectedPensioner) return null;
 
   // Handle Approve with validation
   const handleApprove = () => {

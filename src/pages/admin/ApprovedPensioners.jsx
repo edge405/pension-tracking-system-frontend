@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Search, UserCheck, Edit } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
-import { getApprovedPensioners, updatePensionerPayout } from '../services/admin_api';
+import { getApprovedPensioners, updatePensionerPayout, deletePensioner } from '../services/admin_api';
 import EditModal from './EditModal'; // Import the EditModal component
+import {ToastContainer, toast} from 'react-toastify';
 
 const ApprovedPensioners = () => {
   const [approvedPensioners, setApprovedPensioners] = useState([]);
@@ -67,6 +68,17 @@ const ApprovedPensioners = () => {
     setSelectedPensioner(pensioner); // Open modal with selected pensioner
   };
 
+  const handleDelete = async (pensionerId) => {
+    try {
+      const response = await deletePensioner(pensionerId, token); // Call the API to delete the pensioner
+      setApprovedPensioners((prev) => prev.filter((p) => p.id !== pensionerId)); // Update local state
+      toast.info(response.message || 'Pensioner deleted successfully!'); // Show success message
+    } catch (error) {
+      console.error('Failed to delete pensioner:', error.message);
+      toast.error('Failed to delete pensioner. Please try again.');
+    }
+  }
+
   // Handle closing the modal
   const handleCloseModal = () => {
     setSelectedPensioner(null); // Close modal
@@ -75,7 +87,7 @@ const ApprovedPensioners = () => {
   // Handle updating the pension amount
   const handleUpdatePayout = async (pensionerId, newAmount) => {
     try {
-      await updatePensionerPayout(pensionerId, newAmount, token);
+      const response = await updatePensionerPayout(pensionerId, newAmount, token);
 
       // Update the local state to reflect the change
       const updatedPensioners = approvedPensioners.map((pensioner) =>
@@ -83,7 +95,7 @@ const ApprovedPensioners = () => {
       );
       
       setApprovedPensioners(updatedPensioners);
-
+      toast.success(response.message || 'Pension amount updated successfully!'); // Show success message
       handleCloseModal(); // Close the modal after update
     } catch (error) {
       console.error('Failed to update pension amount:', error.message);
@@ -226,8 +238,10 @@ const ApprovedPensioners = () => {
           selectedPensioner={selectedPensioner}
           onClose={handleCloseModal}
           onUpdate={(id, newAmount) => handleUpdatePayout(id, newAmount)}
+          onDelete={handleDelete}
         />
       )}
+      <ToastContainer/>
     </div>
   );
 };

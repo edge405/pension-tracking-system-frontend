@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminLogin from './pages/auth/AdminLogin';
 import PensionerLogin from './pages/auth/PensionerLogin';
+import PensionTrackingCoverPage from './pages/auth/PensionerCover';
 import Register from './pages/auth/Register';
 import PensionerDashboard from './pages/pensioner/PensionerDashboard';
 import PrivateRoute from './components/PrivateRoute'; // Create this component later
@@ -15,7 +16,8 @@ function App() {
       <Router basename="/">
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<PensionerLogin />} />
+          <Route path="/" element={<PensionTrackingCoverPage />} />
+          <Route path="/pensioner-login" element={<PensionerLogin />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/register" element={<Register />} />
 

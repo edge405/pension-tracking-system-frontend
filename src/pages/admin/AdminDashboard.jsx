@@ -1,8 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { CreditCard, LogOut, ClipboardCheck, Users, Calendar } from 'lucide-react';
-
-// Import components
+import { CreditCard, LogOut, ClipboardCheck, Users, Calendar, User } from 'lucide-react';
+import Profile from './Profile';
 import Sidebar from './Sidebar';
 import PendingVerification from './PendingVerification';
 import ApprovedPensioners from './ApprovedPensioners';
@@ -14,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('pending');
-  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  // const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [selectedPensioner, setSelectedPensioner] = useState(null);
@@ -27,12 +26,12 @@ const AdminDashboard = () => {
   }
   
   // Mock data for pending verifications
-  const [pendingVerifications, setPendingVerifications] = useState([]);
+  // const [pendingVerifications, setPendingVerifications] = useState([]);
   
-  const handleOpenVerification = (pensioner) => {
-    setSelectedPensioner(pensioner);
-    setShowVerificationModal(true);
-  };
+  // const handleOpenVerification = (pensioner) => {
+  //   setSelectedPensioner(pensioner);
+  //   setShowVerificationModal(true);
+  // };
   
   // Handler to open edit modal for approved pensioner
   const handleOpenEdit = (pensioner) => {
@@ -65,6 +64,10 @@ const AdminDashboard = () => {
           <SchedulePayout 
             handleOpenSchedule={handleOpenSchedule} 
           />
+        );
+      case 'profile':
+        return (
+          <Profile />
         );
       default:
         return null;
@@ -108,17 +111,26 @@ const AdminDashboard = () => {
         {/* Mobile Navigation */}
         <div className="md:hidden w-full mb-4">
           <div className="flex overflow-x-auto pb-2 space-x-2">
+          <button 
+            className={`flex-shrink-0 px-4 py-2 rounded-md flex items-center ${
+              activeTab === 'profile' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700'
+            }`}
+            onClick={() => setActiveTab('profile')}
+          >
+            <User size={16} className="mr-1" />
+            Profile
+          </button>
             <button 
               className={`flex-shrink-0 px-4 py-2 rounded-md flex items-center ${activeTab === 'pending' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700'}`}
               onClick={() => setActiveTab('pending')}
             >
               <ClipboardCheck size={16} className="mr-1" />
               Pending
-              {pendingVerifications.length > 0 && (
+              {/* {pendingVerifications.length > 0 && (
                 <span className={`ml-1 ${activeTab === 'pending' ? 'bg-white text-blue-600' : 'bg-blue-600 text-white'} text-xs rounded-full w-4 h-4 flex items-center justify-center`}>
                   {pendingVerifications.length}
                 </span>
-              )}
+              )} */}
             </button>
             <button 
               className={`flex-shrink-0 px-4 py-2 rounded-md flex items-center ${activeTab === 'approved' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700'}`}

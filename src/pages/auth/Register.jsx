@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { UserPlus, User, Lock, MapPin, Phone, Camera, Loader } from 'lucide-react';
+import { UserPlus, User, Lock, MapPin, Phone, Camera, Loader, ArrowLeft } from 'lucide-react';
 import axios from '../../axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate  } from 'react-router-dom';
 
 const Register = () => {
   const [password, setPassword] = useState('');
@@ -10,11 +10,16 @@ const Register = () => {
   const [sex, setSex] = useState(''); // State for sex
   const [civilStatus, setCivilStatus] = useState(''); // Add state for civil status
   const [isLoading, setIsLoading] = useState(false); // Loading state
+  const navigate = useNavigate();
 
   const handleIdFileChange = (e) => {
     const file = e.target.files[0];
     setIdFile(file);
   };
+
+  const handleBack = () => {
+    navigate(-1);
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
@@ -86,16 +91,27 @@ const Register = () => {
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-gradient-to-r from-blue-700 to-blue-600 text-white p-4 shadow-lg">
-        <div className="container mx-auto flex justify-between items-center">
+        <Link to="/">
+        <div className="container mx-auto flex justify-between items-center cursor-pointer">
           <h1 className="text-2xl font-bold flex items-center">
             <UserPlus className="mr-2" />
             Senior Citizens Pension System
           </h1>
         </div>
+        </Link>
       </header>
       {/* Main Content */}
       <div className="flex flex-1 container mx-auto mt-6 px-4 mb-6 justify-center items-center">
         <div className="w-full max-w-lg bg-white rounded-lg shadow-lg p-8">
+        <button 
+            onClick={handleBack}
+            className="flex items-center text-blue-600 hover:text-blue-800 mb-4 transition-colors duration-200 cursor-pointer"
+            type="button"
+          >
+            <ArrowLeft size={18} className="mr-1" />
+            <span>Back</span>
+          </button>
+          
           <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Register Account</h2>
           <form onSubmit={handleSubmit}>
             {/* Full Name */}
@@ -355,7 +371,7 @@ const Register = () => {
             {/* Login Link */}
             <p className="mt-4 text-center text-sm text-gray-600">
               Already have an account?{' '}
-              <Link to="/" className="text-blue-600 hover:underline font-medium">
+              <Link to="/pensioner-login" className="text-blue-600 hover:underline font-medium">
                 Login here
               </Link>
             </p>

@@ -150,3 +150,29 @@ export const setSchedulePayouts = async (token, payload) => {
     handleError(error);
   }
 };
+
+export const resetPassword = async (token, payload) => {
+  try {
+    const response = await axios.post('/api/admin/reset-password', payload, {
+      auth: {
+        username: token,
+      },
+    });
+    return response.data; // { message: 'Password reset successfully' }
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export const deletePensioner = async (pensionerId, token) => {
+  try {
+    const response = await axios.delete(`/api/admin/pensioners/${pensionerId}`, {
+      auth: {
+        username: token,
+      },
+    });
+    return response.data; // { message: 'Pensioner deleted successfully' }
+  } catch (error) {
+    handleError(error);
+  }
+};
