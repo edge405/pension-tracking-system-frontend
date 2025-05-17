@@ -75,7 +75,7 @@ const PendingVerification = () => {
   // Handle approving a pensioner
   const handleApprove = async (payoutAmount) => {
     try {
-      const response = await updatePensionerStatus(selectedPensioner.id, 'approved', payoutAmount, token);
+      await updatePensionerStatus(selectedPensioner.id, 'approved', payoutAmount, token);
 
       // Update the local state to reflect the change
       const updatedPensioners = pendingVerifications.filter(
@@ -85,7 +85,7 @@ const PendingVerification = () => {
       setFilteredPensioners(
         filteredPensioners.filter((pensioner) => pensioner.id !== selectedPensioner.id)
       );
-      toast.success(response.message || 'Pensioner approved successfully!');
+      toast.success('Pensioner approved successfully!');
       handleCloseModal();
     } catch (error) {
       console.error('Failed to approve pensioner:', error.message);
