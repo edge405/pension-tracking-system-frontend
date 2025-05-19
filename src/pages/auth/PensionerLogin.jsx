@@ -2,13 +2,14 @@ import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { LogIn, User, Lock, Loader, AlertTriangle } from 'lucide-react';
+import { LogIn, User, Lock, Loader, AlertTriangle, Eye, EyeOff } from 'lucide-react';
 import axios from '../../axios';
 
 const PensionerLogin = () => {
   // State to store the username and password
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(''); // State to handle error messages
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const { login } = useContext(AuthContext);
@@ -29,13 +30,13 @@ const PensionerLogin = () => {
       });
 
       const { token, user_type, pensioner } = response.data;
-      
+
       // Check pensioner status
       if (pensioner?.status !== 'approved') {
         setError('Your account is still under verification. Please wait for approval.');
         return;
       }
-  
+
       login(token, user_type, pensioner);
       navigate('/pensioner-dashboard');
     } catch (error) {
@@ -65,23 +66,23 @@ const PensionerLogin = () => {
       const timer = setTimeout(() => {
         setError('');
       }, 3000); // Hide after 3 seconds
-  
+
       return () => clearTimeout(timer); // Cleanup on unmount or error change
     }
   }, [error]);
-  
+
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-gradient-to-r from-blue-700 to-blue-600 text-white p-4 shadow-lg">
-      <Link to="/">
-        <div className="container mx-auto flex justify-between items-center cursor-pointer">
-          <h1 className="text-2xl font-bold flex items-center">
-            <LogIn className="mr-2" />
-            Senior Citizens Pension System
-          </h1>
-        </div>
+        <Link to="/">
+          <div className="container mx-auto flex justify-between items-center cursor-pointer">
+            <h1 className="text-2xl font-bold flex items-center">
+              <LogIn className="mr-2" />
+              Senior Citizens Pension System
+            </h1>
+          </div>
         </Link>
       </header>
 
@@ -124,15 +125,23 @@ const PensionerLogin = () => {
               <div className="relative">
                 <Lock size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)} // Update state on change
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your password"
                   required
                   disabled={isLoading}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
+                  tabIndex="-1"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
             </div>
             <button
