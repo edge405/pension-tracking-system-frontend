@@ -28,6 +28,46 @@ export default function PensionTrackingCoverPage() {
         </div>
       </header>
 
+      <div className="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-16 px-4 text-center shadow-xl relative overflow-hidden">
+        {/* Background pattern with subtle grid lines */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{ 
+            backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)', 
+            backgroundSize: '40px 40px' 
+          }}></div>
+        </div>
+
+       <div className="absolute top-0 left-0 w-64 h-64 bg-blue-500 rounded-full opacity-20 -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-400 rounded-full opacity-10 translate-x-1/3 translate-y-1/3"></div>
+        
+        <div className="container mx-auto relative z-10">
+          <div className="max-w-4xl mx-auto bg-white/10 backdrop-blur-md p-10 rounded-2xl border border-white/20 shadow-2xl">
+            <div className="bg-blue-800/30 mx-auto w-24 h-1 mb-6 rounded-full"></div>
+            
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-white">
+                Senior Citizen's Information and Pension Tracking System
+              </span>
+            </h2>
+
+            <div className="w-36 h-1 bg-blue-300/50 mx-auto mb-6 rounded-full"></div>
+
+            <p className="text-blue-50 text-xl md:text-2xl font-light italic">
+              A Comprehensive Solution for Senior Citizen Management
+            </p>
+            
+            <div className="flex justify-center mt-8">
+              <div className="bg-blue-600/30 backdrop-blur-sm px-6 py-3 rounded-full border border-blue-300/20 inline-flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span className="text-blue-100">Secure • Reliable • Efficient</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Hero Section with improved design */}
       <div className="bg-blue-50 py-16">
         <div className="container mx-auto px-4">
