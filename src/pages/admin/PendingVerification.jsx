@@ -5,6 +5,7 @@ import { getPendingPensioners, updatePensionerStatus } from '../services/admin_a
 import VerificationModal from './VerificationModal';
 import Sidebar from './Sidebar';
 import { ToastContainer, toast } from 'react-toastify';
+import { formatDate } from '../services/formatDate';
 
 const PendingVerification = () => {
   const [pendingVerifications, setPendingVerifications] = useState([]);
@@ -96,7 +97,7 @@ const PendingVerification = () => {
   // Handle rejecting a pensioner
   const handleReject = async () => {
     try {
-      const response = await updatePensionerStatus(selectedPensioner.id, 'rejected', null, token);
+      await updatePensionerStatus(selectedPensioner.id, 'rejected', null, token);
 
       // Update the local state to reflect the change
       const updatedPensioners = pendingVerifications.filter(
@@ -106,7 +107,7 @@ const PendingVerification = () => {
       setFilteredPensioners(
         filteredPensioners.filter((pensioner) => pensioner.id !== selectedPensioner.id)
       );
-      toast.info(response.message || 'Pensioner rejected successfully!');
+      toast.info('Pensioner rejected successfully!');
       handleCloseModal();
     } catch (error) {
       console.error('Failed to reject pensioner:', error.message);
@@ -214,7 +215,7 @@ const PendingVerification = () => {
                       <div className="text-sm text-gray-900">{pensioner.age}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{new Date(pensioner.created_at).toLocaleDateString()}</div>
+                      <div className="text-sm text-gray-900">{formatDate(new Date(pensioner.created_at).toLocaleDateString())}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">

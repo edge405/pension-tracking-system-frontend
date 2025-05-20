@@ -3,20 +3,21 @@ import { XCircle, CheckCircle, User } from 'lucide-react';
 import { formatDate } from '../services/formatDate';
 
 const VerificationModal = ({ selectedPensioner, onClose, onApprove, onReject }) => {
-    // State for payout amount and error handling
+  // State for payout amount and error handling
   const [payoutAmount, setPayoutAmount] = useState(selectedPensioner.payout_amount || '');
   const [error, setError] = useState('');
 
   if (!selectedPensioner) return null;
 
-  // Handle Approve with validation
+  // Handle Approve with validation only if amount is provided
   const handleApprove = () => {
-    if (!payoutAmount || payoutAmount <= 0) {
-      setError('Pension Payout Amount is required and must be greater than 0.');
+    // Allow empty value (optional), but if value exists it must be > 0
+    if (payoutAmount && payoutAmount <= 0) {
+      setError('Pension Payout Amount must be greater than 0.');
       return;
     }
     setError('');
-    onApprove(payoutAmount); // Pass the payout amount to the parent
+    onApprove(payoutAmount);
   };
 
   return (
@@ -97,17 +98,16 @@ const VerificationModal = ({ selectedPensioner, onClose, onApprove, onReject }) 
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Pension Payout Amount (₱)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Pension Payout Amount (₱) - Optional</label>
               <input
                 type="number"
                 className={`w-full p-3 rounded-lg border ${error ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                placeholder="Enter pension payout amount"
+                placeholder="Enter pension payout amount (optional)"
                 value={payoutAmount}
                 onChange={(e) => {
                   setPayoutAmount(e.target.value);
                   setError(''); // Clear error when user starts typing
                 }}
-                required
               />
               {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
             </div>

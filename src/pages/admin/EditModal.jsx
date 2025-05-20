@@ -68,7 +68,7 @@ const EditModal = ({ selectedPensioner, onClose, onUpdate, onDelete }) => {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Current Pension Amount</label>
             <div className="p-3 bg-gray-100 rounded-lg border border-gray-200 font-semibold">
-              ₱{selectedPensioner.payout_amount ? parseFloat(selectedPensioner.payout_amount).toLocaleString() : 'N/A'}
+              {selectedPensioner.payout_amount ? `₱${parseFloat(selectedPensioner.payout_amount).toLocaleString()}` : 'N/A'}
             </div>
           </div>
 

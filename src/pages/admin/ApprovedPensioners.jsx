@@ -207,7 +207,7 @@ const ApprovedPensioners = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">
-                        ₱{pensioner.payout_amount ? parseFloat(pensioner.payout_amount).toLocaleString() : 'N/A'}
+                        {pensioner.payout_amount ? `₱${parseFloat(pensioner.payout_amount).toLocaleString()}` : 'N/A'}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
